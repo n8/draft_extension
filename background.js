@@ -8,10 +8,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
       chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentValue){
         
-        $.post("http://127.0.0.1:3000/documents/new_from_extension", { referral_guid: guid, content: currentValue, authenticity_token: authenticity_token }, function(document_id){
+        $.post("http://127.0.0.1:3000/site/extension", { referral_guid: guid, content: currentValue, authenticity_token: authenticity_token }, function(document_id){
           // alert(document_id);
           chrome.tabs.create({url: "http://127.0.0.1:3000/documents/" + document_id + "/edit"});
-          setTimeout(function(){fetchDocumentContent(guid)}, 2000);
+          setTimeout(function(){fetchDocumentContent(guid, authenticity_token)}, 2000);
         });
 
 
@@ -25,18 +25,23 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 
-function fetchDocumentContent(guid){
+function fetchDocumentContent(guid, authenticity_token){
   guid_parts = guid.split("-");
 
-  $.get("http://127.0.0.1:3000/documents/show_for_extension?referral_guid=" + guid, function(data) {
+  chrome.tabs.sendMessage(parseInt(guid_parts[0]), 'getCurrentValue', function(currentValue){
 
+    $.post("http://127.0.0.1:3000/documents/sync_with_extension", { referral_guid: guid, content: currentValue, authenticity_token: authenticity_token }, function(data){
 
-    chrome.tabs.sendMessage(parseInt(guid_parts[0]), data, function(response){
+      chrome.tabs.sendMessage(parseInt(guid_parts[0]), data, function(response){
 
+      });
     });
   });
 
-  setTimeout(function(){fetchDocumentContent(guid)}, 2000);
+  chrome.tabs.query({url: 'http://127.0.0.0.1'}, function(tab){
+    setTimeout(function(){fetchDocumentContent(guid, authenticity_token)}, 2000);
+  });
+  
 }
 
 

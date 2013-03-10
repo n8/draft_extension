@@ -15,8 +15,7 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
     }
   }
   else{
-    console.log(data);
-    
+
     if(el.nodeName == "DIV"){
       el.innerHTML = data;
     }
