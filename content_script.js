@@ -14,6 +14,25 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
       sendResponse();
     }
   }
+  else if(data == "getDraftValue"){
+    el = document.getElementById("document_content");
+
+    if(el){
+      sendResponse(el.value);
+    }
+    else{
+
+    }
+    if(el == null){
+      el = document.getElementById("document_content_for_export");
+
+      if(el){
+        sendResponse(el.innerHTML);
+      }
+    }
+
+    
+  }
   else{
 
     if(el.nodeName == "DIV"){

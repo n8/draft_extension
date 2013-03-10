@@ -13,6 +13,7 @@
   },
   "background": { "scripts": ["background.js", "jquery.js"] },
   "permissions": [
+    "cookies",
     "http://*/*", 
     "tabs"
   ], 
