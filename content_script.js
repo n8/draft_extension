@@ -11,7 +11,7 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
       sendResponse(el.value);
     }
     else{
-      sendResponse();
+      sendResponse(el.innerText);
     }
   }
   else if(data == "getDraftValue"){

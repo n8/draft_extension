@@ -4,11 +4,15 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     
     target_tab = tabs[0]
 
-    chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentValue){
+    chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentTargetValue){
+      
+      chrome.tabs.create({url: "http://127.0.0.1:3000/documents"}, function(draft_tab){
 
-      chrome.cookies.set({"url": "http://127.0.0.1", "name": "currentTargetValue", "value": currentValue}, function(cookie){
-        chrome.tabs.create({url: "http://127.0.0.1:3000/documents"}, function(draft_tab){
-          setTimeout(function(){fetchDocumentContent(target_tab, draft_tab)}, 2000);
+        chrome.cookies.remove({"url": "http://127.0.0.1", "name": "currentTargetValue"}, function(oldcookie){
+
+          chrome.cookies.set({"url": "https://127.0.0.1", "name": "currentTargetValue", "value": currentTargetValue}, function(cookie){
+          
+          });
         });
       });   
 
