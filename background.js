@@ -6,15 +6,21 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
     chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentTargetValue){
       
-      chrome.tabs.create({url: "http://127.0.0.1:3000/documents"}, function(draft_tab){
 
-        chrome.cookies.remove({"url": "http://127.0.0.1", "name": "currentTargetValue"}, function(oldcookie){
+        chrome.cookies.set( {"domain": "127.0.0.1", "url": "http://127.0.0.1", "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
+          chrome.cookies.set( {"url": "http://127.0.0.1", "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
 
-          chrome.cookies.set({"url": "https://127.0.0.1", "name": "currentTargetValue", "value": currentTargetValue}, function(cookie){
+  
+            chrome.tabs.create({url: "http://127.0.0.1:3000/documents/"}, function(draft_tab){
+
+        
+
+              fetchDocumentContent(target_tab, draft_tab);
+            });
           
           });
         });
-      });   
+ 
 
     });
 
