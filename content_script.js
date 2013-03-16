@@ -35,7 +35,7 @@ window.addEventListener("message", function(event) {
     return;
 
   if (event.data.type && (event.data.type == "PASTE")) {
-    console.log("Content script received: " + event.data.text);
+    // console.log("Content script received: " + event.data.text);
 
     chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
       
@@ -64,7 +64,7 @@ function setCurrentValue(document, data){
   el = document.activeElement;
 
   if(el.nodeName == "DIV" || el.nodeName == "BODY"){
-    el.innerHTML = data;
+    el.innerText = data;
   }
   else if(el.nodeName == "TEXTAREA"){
     el.value = data;

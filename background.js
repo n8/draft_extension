@@ -1,14 +1,15 @@
 target_tab = null; 
 current_draft_tab = null; 
+originalTargetURL = null;
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
-  if(target_tab.id == tabId){
-    removeCookies(tabId);
-  }
+  removeCookies(tabId);
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
-  removeCookies(tabId);
+  if(originalTargetURL != target_tab.url){
+    removeCookies(tabId);
+  }
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
