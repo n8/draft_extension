@@ -1,7 +1,7 @@
 {
   "name": "Draft",
-  "version": "1.0.2",
-  "manifest_version": 3,
+  "version": "1.0.3",
+  "manifest_version": 4,
   "description": "Easy collaboration and version control for writers with Draft. Everywhere.",
   "icons": {
     "16": "icon-16.png",
