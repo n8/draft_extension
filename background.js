@@ -15,7 +15,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
         
 
-              fetchDocumentContent(target_tab, draft_tab);
+              fetchDocumentContent(target_tab, draft_tab, target_tab.url);
             });
           
           });
@@ -44,7 +44,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 });
 
-function fetchDocumentContent(targetTab, draftTab){
+function fetchDocumentContent(targetTab, draftTab, original_target_url){
 
   chrome.tabs.sendMessage(draftTab.id, 'getDraftValue', function(currentDraftValue){
    
@@ -54,11 +54,21 @@ function fetchDocumentContent(targetTab, draftTab){
 
   });
 
-  chrome.tabs.query({url: 'http://127.0.0.1/*'}, function(tabs){
-    if(tabs.length > 0){
-      setTimeout(function(){fetchDocumentContent(targetTab, draftTab)}, 2000);
+  chrome.tabs.query({url: 'https://draftin.com/*'}, function(tabs){
+    // make sure we are at the original target
+
+    if(tabs.length > 0 && targetTab.url === original_target_url){
+      setTimeout(function(){fetchDocumentContent(targetTab, draftTab, targetTab.url)}, 2000);
     }
   });
+
+  // chrome.tabs.query({url: 'http://127.0.0.1/*'}, function(tabs){
+  //   // make sure we are at the original target
+
+  //   if(tabs.length > 0 && targetTab.url === original_target_url){
+  //     setTimeout(function(){fetchDocumentContent(targetTab, draftTab, targetTab.url)}, 2000);
+  //   }
+  // });
   
 }
 
