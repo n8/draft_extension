@@ -29,6 +29,21 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
   
 });
 
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window)
+    return;
+
+  if (event.data.type && (event.data.type == "PASTE")) {
+    console.log("Content script received: " + event.data.text);
+
+    chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
+      
+    });
+
+  }
+}, false);
+
 
 function getCurrentValue(document){
   el = document.activeElement;
@@ -49,7 +64,6 @@ function setCurrentValue(document, data){
   el = document.activeElement;
 
   if(el.nodeName == "DIV" || el.nodeName == "BODY"){
-    console.log(data)
     el.innerHTML = data;
   }
   else if(el.nodeName == "TEXTAREA"){
