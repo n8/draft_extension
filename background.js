@@ -1,6 +1,10 @@
-target_tab = null; 
-current_draft_tab = null; 
-originalTargetURL = null;
+var target_tab = null; 
+var current_draft_tab = null; 
+var originalTargetURL = null;
+
+var host = "127.0.0.1";
+var protocol = "http";
+var protocol_and_host = protocol + "://" + host;
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
   removeCookies(tabId);
@@ -22,35 +26,35 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentTargetValue){
       
 
-        chrome.cookies.set( {"domain": "draftin.com", "url": "https://draftin.com", "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
-          chrome.cookies.set( {"url": "https://draftin.com", "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
+        // chrome.cookies.set( {"domain": "draftin.com", "url": "https://draftin.com", "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
+        //   chrome.cookies.set( {"url": "https://draftin.com", "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
 
   
-            chrome.tabs.create({url: "https://draftin.com/documents/"}, function(draft_tab){
-
-              current_draft_tab = draft_tab;
-
-              // fetchDocumentContent(target_tab, draft_tab, originalTargetURL);
-            });
-          
-          });
-        });
- 
-
-
-        // chrome.cookies.set( {"domain": "127.0.0.1", "url": "http://127.0.0.1", "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
-        //   chrome.cookies.set( {"url": "http://127.0.0.1", "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
-
-  
-        //     chrome.tabs.create({url: "http://127.0.0.1:3000/documents/"}, function(draft_tab){
+        //     chrome.tabs.create({url: "https://draftin.com/documents/"}, function(draft_tab){
 
         //       current_draft_tab = draft_tab;
 
-        //       // fetchDocumentContent(target_tab, draft_tab);
+        //       // fetchDocumentContent(target_tab, draft_tab, originalTargetURL);
         //     });
           
         //   });
         // });
+ 
+
+
+        chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
+          chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
+
+  
+            chrome.tabs.create({url: protocol_and_host + "/documents/"}, function(draft_tab){
+
+              current_draft_tab = draft_tab;
+
+              // fetchDocumentContent(target_tab, draft_tab);
+            });
+          
+          });
+        });
  
 
     });
@@ -76,54 +80,14 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
 
 function removeCookies(tab_id){
   if(target_tab.id == tab_id){
-    // chrome.cookies.remove({"url": "http://127.0.0.1", 'name': "currentTargetValue"});
-    // chrome.cookies.remove({"url": "http://127.0.0.1", 'name': "currentTargetURL"});
+    chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetValue"});
+    chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetURL"});
 
-    chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetValue"});
-    chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetURL"});
+    // chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetValue"});
+    // chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetURL"});
 
   }
 }
-
-function fetchDocumentContent(targetTab, draftTab, original_target_url){
-
-  // chrome.tabs.query({url: 'https://draftin.com/*'}, function(tabs){
-
-  chrome.tabs.query({url: 'http://127.0.0.1/*'}, function(tabs){
-
-    // make sure we are at the original target
-
-    // alert(targetTab.url);
-
-    chrome.tabs.get(targetTab.id, function(currentTargetTab){
-      if(tabs.length > 0 && currentTargetTab.url == original_target_url){
-
-        chrome.tabs.sendMessage(draftTab.id, 'getDraftValue', function(currentDraftValue){
-   
-          chrome.tabs.sendMessage(targetTab.id, currentDraftValue, function(response){
-
-          });
-
-        });
-
-
-        // setTimeout(function(){fetchDocumentContent(targetTab, draftTab, original_target_url)}, 2000);
-      }
-    });
-
-    
-  });
-
-  // chrome.tabs.query({url: 'http://127.0.0.1/*'}, function(tabs){
-  //   // make sure we are at the original target
-
-  //   if(tabs.length > 0 && targetTab.url === original_target_url){
-  //     setTimeout(function(){fetchDocumentContent(targetTab, draftTab, targetTab.url)}, 2000);
-  //   }
-  // });
-  
-}
-
 
 
 
