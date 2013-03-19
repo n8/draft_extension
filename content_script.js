@@ -34,7 +34,7 @@ window.addEventListener("message", function(event) {
   if (event.source != window)
     return;
 
-  if (event.data.type && (event.data.type == "PASTE")) {
+  if (event.data && event.data.type && (event.data.type == "PASTE")) {
     // console.log("Content script received: " + event.data.text);
 
     chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
@@ -45,10 +45,19 @@ window.addEventListener("message", function(event) {
 }, false);
 
 
-function getCurrentValue(document){
+function getCurrentValue(document, includeBody){
+  
+  var el = null; 
+
+  // check google docs
+  // el = googleDocsContainer(document);
+  // if(el){
+  //   return el.innerHTML;
+  // }
+
   el = document.activeElement;
 
-  if(el.nodeName == "DIV" || el.nodeName == "BODY"){
+  if(el.nodeName == "DIV" || (includeBody && el.nodeName == "BODY")){
     return el.innerText;
   }
   else if(el.nodeName == "TEXTAREA"){
@@ -56,14 +65,28 @@ function getCurrentValue(document){
   }
   else if(el.nodeName == "IFRAME"){
     var innerDoc = el.contentDocument || el.contentWindow.document;
-    return getCurrentValue(innerDoc);
+    return getCurrentValue(innerDoc, true);
+  }
+  else{
+    if(document.URL == "https://twitter.com/"){
+      el = document.getElementById("tweet-box-mini-home-profile");
+      el.children[0].innerText;
+    }
   }
 }
 
-function setCurrentValue(document, data){
+function setCurrentValue(document, data, includeBody){
+  var el = null; 
+
+  // el = googleDocsContainer(document);
+  // if(el){
+  //   el.innerHTML = data;
+  //   return;
+  // }
+
   el = document.activeElement;
 
-  if(el.nodeName == "DIV" || el.nodeName == "BODY"){
+  if(el.nodeName == "DIV" || (includeBody && el.nodeName == "BODY")){
     el.innerText = data;
   }
   else if(el.nodeName == "TEXTAREA"){
@@ -71,6 +94,21 @@ function setCurrentValue(document, data){
   }
   else if(el.nodeName == "IFRAME"){
     var innerDoc = el.contentDocument || el.contentWindow.document;
-    setCurrentValue(innerDoc, data);
+    setCurrentValue(innerDoc, data, true);
+  }
+  else{
+    if(document.URL == "https://twitter.com/"){
+      el = document.getElementById("tweet-box-mini-home-profile");
+      el.children[0].innerText = data;
+    }
+  }
+}
+
+function googleDocsContainer(document){
+  el = document.getElementById("docs-editor-container");
+  if(el){
+    // theres a 'print block' at the top
+    el = document.querySelectorAll(".kix-lineview-text-block")[0];
+    return el;
   }
 }

@@ -4,7 +4,7 @@ var originalTargetURL = null;
 
 var host = "127.0.0.1";
 var protocol = "http";
-var protocol_and_host = protocol + "://" + host;
+var protocol_and_host = protocol + "://" + host + ":3000";
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
   removeCookies(tabId);
@@ -25,23 +25,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
     chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentTargetValue){
       
-
-        // chrome.cookies.set( {"domain": "draftin.com", "url": "https://draftin.com", "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
-        //   chrome.cookies.set( {"url": "https://draftin.com", "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
-
-  
-        //     chrome.tabs.create({url: "https://draftin.com/documents/"}, function(draft_tab){
-
-        //       current_draft_tab = draft_tab;
-
-        //       // fetchDocumentContent(target_tab, draft_tab, originalTargetURL);
-        //     });
-          
-        //   });
-        // });
- 
-
-
         chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
           chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
 
@@ -50,13 +33,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
               current_draft_tab = draft_tab;
 
-              // fetchDocumentContent(target_tab, draft_tab);
             });
           
           });
         });
- 
-
     });
 
   });
@@ -82,10 +62,6 @@ function removeCookies(tab_id){
   if(target_tab.id == tab_id){
     chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetValue"});
     chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetURL"});
-
-    // chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetValue"});
-    // chrome.cookies.remove({"url": "https://draftin.com", 'name': "currentTargetURL"});
-
   }
 }
 
