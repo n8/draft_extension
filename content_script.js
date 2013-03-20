@@ -49,12 +49,6 @@ function getCurrentValue(document, includeBody){
   
   var el = null; 
 
-  // check google docs
-  // el = googleDocsContainer(document);
-  // if(el){
-  //   return el.innerHTML;
-  // }
-
   el = document.activeElement;
 
   if(el.nodeName == "DIV" || (includeBody && el.nodeName == "BODY")){
@@ -86,8 +80,11 @@ function setCurrentValue(document, data, includeBody){
 
   el = document.activeElement;
 
-  if(el.nodeName == "DIV" || (includeBody && el.nodeName == "BODY")){
+  if(el.nodeName == "DIV"){
     el.innerText = data;
+  }
+  else if(includeBody && el.nodeName == "BODY"){
+    el.innerHTML = data;
   }
   else if(el.nodeName == "TEXTAREA"){
     el.value = data;

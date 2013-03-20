@@ -1,9 +1,70 @@
 <!doctype html>
 <html>
   <head>
+    <title>Set Page Color Popup</title>
+    <style>
+    body {
+      overflow: hidden;
+      margin: 0px;
+      background: #f1f1f1;
+    }
+
+    div:first-child {
+      margin-top: 0px;
+    }
+
+    div {
+      cursor: pointer;
+      text-align: center;
+      padding: 1em 0;
+      font-family: sans-serif;
+      font-size: 0.85em;
+      font-weight: bold;
+      width: 16em;
+      margin-top: 1px;
+      color: #F1F1F1;
+      text-transform: uppercase;
+      letter-spacing:0.1em;
+      -webkit-transition: background-color 0.15s ease-in-out; 
+      -moz-transition: background-color 0.15s ease-in-out; 
+      -o-transition: background-color 0.15s ease-in-out; 
+      transition: background-color 0.15s ease-in-out;
+      -khtml-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      line-height: 1.5em;
+
+    }
+
+
+    #new_document {
+       background-color: #88BD00;
+    }
+    #new_document:hover, #new_document:focus, #new_document:active { 
+      background: #648A00;
+    }
+
+    #previous_document { 
+      background: #4786F1; 
+    }
+    #previous_document:hover, #previous_document:active, #previous_document:focus { 
+      background: #386ABE; 
+    }
+
+/*    div:active{
+      position: relative;
+      top: 1px;
+      -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;
+      border: none;
+    }*/
+
+
+    </style>
     <script src="popup.js"></script>
   </head>
   <body>
+    <div id="new_document">New Document</div>
+    <div id="previous_document">Previous Document</div>
   </body>
 </html>
-
