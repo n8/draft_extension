@@ -4,13 +4,13 @@ var originalTargetURL = null;
 // var current_draft_tab = null; 
 
 
-var host = "127.0.0.1";
-var protocol = "http";
-var protocol_and_host = protocol + "://" + host + ":3000";
+// var host = "127.0.0.1";
+// var protocol = "http";
+// var protocol_and_host = protocol + "://" + host + ":3000";
 
-// var host = "draftin.com";
-// var protocol = "https";
-// var protocol_and_host = protocol + "://" + host;
+var host = "draftin.com";
+var protocol = "https";
+var protocol_and_host = protocol + "://" + host;
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
   removeCookies(tabId);
