@@ -72,12 +72,6 @@ function getCurrentValue(document, includeBody){
 function setCurrentValue(document, data, includeBody){
   var el = null; 
 
-  // el = googleDocsContainer(document);
-  // if(el){
-  //   el.innerHTML = data;
-  //   return;
-  // }
-
   el = document.activeElement;
 
   if(el.nodeName == "DIV"){
@@ -96,16 +90,9 @@ function setCurrentValue(document, data, includeBody){
   else{
     if(document.URL == "https://twitter.com/"){
       el = document.getElementById("tweet-box-mini-home-profile");
+      el.focus();
       el.children[0].innerText = data;
+   
     }
-  }
-}
-
-function googleDocsContainer(document){
-  el = document.getElementById("docs-editor-container");
-  if(el){
-    // theres a 'print block' at the top
-    el = document.querySelectorAll(".kix-lineview-text-block")[0];
-    return el;
   }
 }
