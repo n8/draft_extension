@@ -1,8 +1,22 @@
+
+
+// Check whether new version is installed
+chrome.runtime.onInstalled.addListener(function(details){
+  chrome.tabs.query({}, function(tabs){
+    for (var i = 0; i < tabs.length; i++) {
+      try{
+        chrome.tabs.executeScript(tabs[i].id, {file: "content_script.js"});
+      }
+      catch(err){
+        // Ignore
+      }
+    }
+  });
+});
+
+
 var targetTab = null; 
 var originalTargetURL = null;
-
-// var current_draft_tab = null; 
-
 
 // var host = "127.0.0.1";
 // var protocol = "http";
@@ -17,37 +31,11 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
-  if(originalTargetURL != targetTab.url){
+  if(targetTab && originalTargetURL != targetTab.url){
     removeCookies(tabId);
   }
 });
 
-// chrome.browserAction.onClicked.addListener(function(tab) {
-  
-//   chrome.tabs.query({'active': true}, function(tabs){
-    
-//     target_tab = tabs[0];
-//     originalTargetURL = target_tab.url;
-
-//     chrome.tabs.sendMessage(tab.id, 'getCurrentValue', function(currentTargetValue){
-      
-//         chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
-//           chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(target_tab.url)}, function(currentTargetURLCookie){
-
-  
-//             chrome.tabs.create({url: protocol_and_host + "/documents/", index: target_tab.index + 1}, function(draft_tab){
-
-//               current_draft_tab = draft_tab;
-
-//             });
-          
-//           });
-//         });
-//     });
-
-//   });
-
-// });
 
 setTargetTab = function(tab){
   targetTab = tab; 

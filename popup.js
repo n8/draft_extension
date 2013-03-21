@@ -1,5 +1,4 @@
 var targeTab = null; 
-// var current_draft_tab = null; 
 
 // var host = "127.0.0.1";
 // var protocol = "http";
