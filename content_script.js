@@ -1,5 +1,7 @@
-chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
 
+
+var valueListenerFunction = function valueListener(data, sender, sendResponse){
+  
   if(data == 'getCurrentValue'){
     var currentValue = getCurrentValue(document); 
     sendResponse(currentValue);
@@ -26,24 +28,7 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
   else{
     setCurrentValue(document, data); 
   }
-  
-});
-
-window.addEventListener("message", function(event) {
-  // We only accept messages from ourselves
-  if (event.source != window)
-    return;
-
-  if (event.data && event.data.type && (event.data.type == "PASTE")) {
-    // console.log("Content script received: " + event.data.text);
-
-    chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
-      
-    });
-
-  }
-}, false);
-
+}
 
 function getCurrentValue(document, includeBody){
   
@@ -96,3 +81,22 @@ function setCurrentValue(document, data, includeBody){
     }
   }
 }
+
+
+chrome.extension.onMessage.addListener(valueListenerFunction);
+
+
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window)
+    return;
+
+  if (event.data && event.data.type && (event.data.type == "PASTE")) {
+    // console.log("Content script received: " + event.data.text);
+
+    chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
+      
+    });
+
+  }
+}, false);
