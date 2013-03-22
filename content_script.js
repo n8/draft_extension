@@ -1,7 +1,7 @@
 
 
 var valueListenerFunction = function valueListener(data, sender, sendResponse){
-  
+
   if(data == 'getCurrentValue'){
     var currentValue = getCurrentValue(document); 
     sendResponse(currentValue);
@@ -37,6 +37,7 @@ function getCurrentValue(document, includeBody){
   el = document.activeElement;
 
   if(el.nodeName == "DIV" || (includeBody && el.nodeName == "BODY")){
+
     return el.innerText;
   }
   else if(el.nodeName == "TEXTAREA"){
@@ -46,12 +47,14 @@ function getCurrentValue(document, includeBody){
     var innerDoc = el.contentDocument || el.contentWindow.document;
     return getCurrentValue(innerDoc, true);
   }
-  else{
-    if(document.URL == "https://twitter.com/"){
-      el = document.getElementById("tweet-box-mini-home-profile");
-      el.children[0].innerText;
-    }
+  else if(document.URL == "https://twitter.com/"){
+    el = document.getElementById("tweet-box-mini-home-profile");
+    return el.children[0].innerText;
   }
+  else{
+    return "NOT_SUPPORTED_ELEMENT";
+  }
+
 }
 
 function setCurrentValue(document, data, includeBody){

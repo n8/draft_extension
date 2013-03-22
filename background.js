@@ -17,6 +17,7 @@ chrome.runtime.onInstalled.addListener(function(details){
 
 var targetTab = null; 
 var originalTargetURL = null;
+var draftTab = null; 
 
 // var host = "127.0.0.1";
 // var protocol = "http";
@@ -26,10 +27,12 @@ var host = "draftin.com";
 var protocol = "https";
 var protocol_and_host = protocol + "://" + host;
 
+// If either the target or Draft tabs are closed, remove the cookies
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
   removeCookies(tabId);
 });
 
+// If the original target's url has changed, all of this is stale. Remove the cookies
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
   if(targetTab && originalTargetURL != targetTab.url){
     removeCookies(tabId);
@@ -37,9 +40,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
 });
 
 
-setTargetTab = function(tab){
+function setTargetTab(tab){
   targetTab = tab; 
   originalTargetURL = targetTab.url; 
+}
+
+function setDraftTab(tab){
+  draftTab = tab; 
 }
 
 chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
@@ -58,7 +65,7 @@ chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
 
 
 function removeCookies(tab_id){
-  if(targetTab.id == tab_id){
+  if((targetTab && targetTab.id == tab_id) || (draftTab && draftTab.id == tab_id)){
     chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetValue"});
     chrome.cookies.remove({"url": protocol_and_host, 'name': "currentTargetURL"});
   }

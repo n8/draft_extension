@@ -1,4 +1,4 @@
-var targeTab = null; 
+var targetTab = null; 
 
 // var host = "127.0.0.1";
 // var protocol = "http";
@@ -22,32 +22,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function click(e) {
 
-  chrome.tabs.query({'active': true}, function(tabs){
+  chrome.tabs.query({'active': true, windowId: chrome.windows.WINDOW_ID_CURRENT}, function(tabs){
     
     targetTab = tabs[0];
     BGPage.setTargetTab(targetTab); 
 
-    chrome.tabs.sendMessage(targetTab.id, 'getCurrentValue', function(currentTargetValue){
-      
+    if(targetTab && targetTab.url && targetTab.url.substring(0, 9) != "chrome://"){
 
-      chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
-        chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
-
-          url = null; 
-          if(e.target.id == "previous_document"){
-            url = protocol_and_host + "/documents/";
-          }
-          else{
-             url = protocol_and_host + "/documents/new";
-          }
-
-          chrome.tabs.create({url: url, index: targetTab.index + 1}, function(draftTab){
-
-          });
+      chrome.tabs.sendMessage(targetTab.id, 'getCurrentValue', function(currentTargetValue){
         
-        });
+        
+        if(currentTargetValue != "NOT_SUPPORTED_ELEMENT"){
+          
+          chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
+            chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
+
+              url = null; 
+              if(e.target.id == "previous_document"){
+                url = protocol_and_host + "/documents/";
+              }
+              else{
+                url = protocol_and_host + "/documents/new";
+              }
+
+              chrome.tabs.create({url: url, index: targetTab.index + 1}, function(draftTab){
+                BGPage.setDraftTab(draftTab); 
+              });
+            
+            });
+          });
+
+        }
+        else{
+          chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
+            
+          });
+        }
+
       });
-    });
+    }
+    else{
+      chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
+        
+      });
+    }
 
     window.close();
   });  
