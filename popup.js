@@ -34,18 +34,27 @@ function click(e) {
         
         if(currentTargetValue != "NOT_SUPPORTED_ELEMENT"){
           
-          chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": escape(currentTargetValue)}, function(currentValueCookie){
+          valueToSet = escape(currentTargetValue); 
+
+
+          // # make sure we dont blog the cookie limit or this wont work
+          if(lengthInUtf8Bytes(valueToSet) > 4000){
+            valueToSet = null;
+          }
+
+          chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": valueToSet}, function(currentValueCookie){
+
             chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
 
               url = null; 
               if(e.target.id == "previous_document"){
-                url = protocol_and_host + "/documents/";
+                url = protocol_and_host + "/documents";
               }
               else{
                 url = protocol_and_host + "/documents/new";
               }
 
-              chrome.tabs.create({url: url, index: targetTab.index + 1}, function(draftTab){
+              chrome.tabs.create({url: url}, function(draftTab){
                 BGPage.setDraftTab(draftTab); 
               });
             
@@ -69,5 +78,13 @@ function click(e) {
 
     window.close();
   });  
+}
+
+
+// http://stackoverflow.com/questions/5515869/string-length-in-bytes-in-javascript
+function lengthInUtf8Bytes(str) {
+  // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
+  var m = encodeURIComponent(str).match(/%[89ABab]/g);
+  return str.length + (m ? m.length : 0);
 }
 
