@@ -20,16 +20,19 @@ var targetTab = null;
 var originalTargetURL = null;
 var draftTab = null; 
 
+
 // Dev settings
-// var host = "127.0.0.1";
-// var protocol = "http";
-// var protocol_and_host = protocol + "://" + host + ":3000";
+var host = "127.0.0.1";
+var protocol = "http";
+var protocol_and_host = protocol + "://" + host + ":3000";
 
 // Prod settings
-var host = "draftin.com";
-var protocol = "https";
-var protocol_and_host = protocol + "://" + host;
+// var host = "draftin.com";
+// var protocol = "https";
+// var protocol_and_host = protocol + "://" + host;
 
+
+var port = null; 
 
 // If either the target or Draft tabs are closed, remove the cookies
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
@@ -47,26 +50,33 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
 function setTargetTab(tab){
   targetTab = tab; 
   originalTargetURL = targetTab.url; 
+  // port = chrome.tabs.connect(targetTab.id);
 }
 
 function setDraftTab(tab){
   draftTab = tab; 
 }
 
+console.log("Starting");
 
+chrome.runtime.onConnect.addListener(function(port) {
+port.onMessage.addListener(function(data) {
 
-chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
+// chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
 
   if(data.type == 'PASTE'){
 
-    chrome.tabs.sendMessage(targetTab.id, data.value, function(response){
-    });
+    port.postMessage(data.value);
+
+    // chrome.tabs.sendMessage(targetTab.id, data.value, function(response){
+    // });
 
     chrome.tabs.update(targetTab.id, {'active': true}, function(response){
 
     });
   }
 
+});
 });
 
 

@@ -1,10 +1,19 @@
 
 
-var valueListenerFunction = function valueListener(data, sender, sendResponse){
+
+
+
+chrome.runtime.onConnect.addListener(function(port) {
+
+port.onMessage.addListener(function(msg) {
 
   if(data == 'getCurrentValue'){
+    
     var currentValue = getCurrentValue(document); 
-    sendResponse(currentValue);
+  
+    // sendResponse(currentValue);
+    port.postMessage(currentValue);
+
   }
   else if(data == "getDraftValue"){
 
@@ -28,7 +37,45 @@ var valueListenerFunction = function valueListener(data, sender, sendResponse){
   else{
     setCurrentValue(document, data); 
   }
-}
+
+});
+});
+
+// var valueListenerFunction = function valueListener(data, sender, sendResponse){
+  
+  
+//   if(data == 'getCurrentValue'){
+    
+
+//     var currentValue = getCurrentValue(document); 
+//     alert("hi");
+//     sendResponse(currentValue);
+//   }
+//   else if(data == "getDraftValue"){
+
+//     el = document.getElementById("document_content");
+
+//     if(el){
+//       sendResponse(el.value);
+//     }
+//     else{
+
+//     }
+//     if(el == null){
+//       el = document.getElementById("document_content_for_export");
+
+//       if(el){
+//         sendResponse(el.innerHTML);
+//       }
+//     }
+
+//   }
+//   else{
+//     setCurrentValue(document, data); 
+//   }
+// }
+
+// chrome.extension.onMessage.addListener(valueListenerFunction);
 
 
 // supports textareas and editable divs, even in iframes. has some special support for Twitter
@@ -88,8 +135,9 @@ function setCurrentValue(document, data, includeBody){
 }
 
 
-chrome.extension.onMessage.addListener(valueListenerFunction);
+console.log("Starting content script");
 
+var port = chrome.runtime.connect();
 
 window.addEventListener("message", function(event) {
   // We only accept messages from ourselves
@@ -99,9 +147,11 @@ window.addEventListener("message", function(event) {
   if (event.data && event.data.type && (event.data.type == "PASTE")) {
     // console.log("Content script received: " + event.data.text);
 
-    chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
+    port.postMessage({type: 'PASTE', value: event.data.text});
+
+    // chrome.extension.sendMessage({type: 'PASTE', value: event.data.text}, function(response) {
       
-    });
+    // });
 
   }
 }, false);
