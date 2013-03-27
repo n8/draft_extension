@@ -64,7 +64,9 @@ function click(e) {
               chrome.tabs.create({url: url}, function(draftTab){
                 BGPage.setDraftTab(draftTab); 
               });
-            
+
+              window.close();
+
             });
           });
 
@@ -73,6 +75,7 @@ function click(e) {
           chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
             
           });
+          window.close();
         }
 
       });
@@ -81,9 +84,11 @@ function click(e) {
       chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
         
       });
+      window.close();
     }
 
-    window.close();
+    // closing the window immediately could cancel the above callbacks
+    //window.close();
   });  
 }
 
