@@ -16,7 +16,7 @@ Just place your cursor in the box you want to write in, click the Chrome Draft e
 
 Choose an already written document or something new to write in Draft. When you're done, there's a menu button to paste your work back into the text box you came from. 
 
-All of a sudden, everything you write everywhere is focused, versioned, and able to be shared with friends for help before you publish. I hope you like it. This might be the neatest and handiest things I've ever made. :)
+All of a sudden, everything you write everywhere is focused, versioned, and able to be shared with friends for help before you publish.
 
 [Click here to access the Draft Chrome extension.](https://chrome.google.com/webstore/detail/draft/amlbbbgcijmiooecobhkjblcdkjldmdk)
 
