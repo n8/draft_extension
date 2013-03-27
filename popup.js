@@ -1,17 +1,20 @@
 var targetTab = null; 
 
+// Dev settings
 // var host = "127.0.0.1";
 // var protocol = "http";
 // var protocol_and_host = protocol + "://" + host + ":3000";
 
+// Prod settings
 var host = "draftin.com";
 var protocol = "https";
 var protocol_and_host = protocol + "://" + host;
 
-
+// So that we can easily set things in the background and log errors to the background's console
 var BGPage = chrome.extension.getBackgroundPage();
 
 
+// Listens for clicks of the popup menu in the Chrome extension
 document.addEventListener('DOMContentLoaded', function () {
   var divs = document.querySelectorAll('div');
   for (var i = 0; i < divs.length; i++) {
@@ -22,16 +25,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function click(e) {
 
+  // look for the active tab, thats our target. That has our textarea
   chrome.tabs.query({'active': true, windowId: chrome.windows.WINDOW_ID_CURRENT}, function(tabs){
     
     targetTab = tabs[0];
     BGPage.setTargetTab(targetTab); 
 
+    // we're good if we have a target tab and it's not a chrome specific tab
     if(targetTab && targetTab.url && targetTab.url.substring(0, 9) != "chrome://"){
 
+      // ask the content script for the current value of the target tab's textarea
       chrome.tabs.sendMessage(targetTab.id, 'getCurrentValue', function(currentTargetValue){
         
-        
+        // if the content script doesn't come up with something, it's because it's not supported or the user hasn't clicked into a textare. they might need some documentation
         if(currentTargetValue != "NOT_SUPPORTED_ELEMENT"){
           
           valueToSet = escape(currentTargetValue); 
@@ -42,6 +48,7 @@ function click(e) {
             valueToSet = null;
           }
 
+          // set the referring url and current value of the text area for Draft to use
           chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": valueToSet}, function(currentValueCookie){
 
             chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){

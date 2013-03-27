@@ -30,6 +30,8 @@ var valueListenerFunction = function valueListener(data, sender, sendResponse){
   }
 }
 
+
+// supports textareas and editable divs, even in iframes. has some special support for Twitter
 function getCurrentValue(document, includeBody){
   
   var el = null; 

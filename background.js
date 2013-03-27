@@ -1,6 +1,7 @@
 
 
-// Check whether new version is installed
+// Check whether new version is installed, if yes load in the content_script. 
+// we do this so that currently open tabs work with the extension. 
 chrome.runtime.onInstalled.addListener(function(details){
   chrome.tabs.query({}, function(tabs){
     for (var i = 0; i < tabs.length; i++) {
@@ -14,18 +15,21 @@ chrome.runtime.onInstalled.addListener(function(details){
   });
 });
 
-
+// The target is the place with the textarea
 var targetTab = null; 
 var originalTargetURL = null;
 var draftTab = null; 
 
+// Dev settings
 // var host = "127.0.0.1";
 // var protocol = "http";
 // var protocol_and_host = protocol + "://" + host + ":3000";
 
+// Prod settings
 var host = "draftin.com";
 var protocol = "https";
 var protocol_and_host = protocol + "://" + host;
+
 
 // If either the target or Draft tabs are closed, remove the cookies
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
@@ -48,6 +52,8 @@ function setTargetTab(tab){
 function setDraftTab(tab){
   draftTab = tab; 
 }
+
+
 
 chrome.extension.onMessage.addListener(function(data, sender, sendResponse) {
 
