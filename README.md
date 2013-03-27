@@ -1,21 +1,22 @@
-# AppSquare
+# Draft Chrome Extension
 
-This is a basic Instagram client implemented as a packaged app.  This demonstration simply displays the users logged-in view as raw JSON.
+Bookmarklets and browser extensions like Instapaper, Evernote's Clearly, and Readability make reading anything on the web simple, focused, and gorgeous. Why can't writing be that way?
 
-To log into Instagram, it uses the [identity API](http://developer.chrome.com/trunk/apps/experimental.identity.html) (specfically, the `launchWebAuthFlow` method). Once it gets the OAuth token it makes a request to an authenticated endpoint to get the JSON feed of the user's view.
+[Draft](http://draftin.com) is an application that let's you have a distraction free writing environment on the web, easy version control, and simple collaboration. I want to write everything in Draft.
 
-When running it unpacked, it will normally have a different ID (the unpacked
-extension ID is a hash of the path on disk). However, this will result in the
-auth API not working, since the redirect URL will be different. To force the
-unpacked app to have the same ID, add this key and value to `manifest.json`:
+So [here's a Chrome extension that lets you](https://chrome.google.com/webstore/detail/draft/amlbbbgcijmiooecobhkjblcdkjldmdk).
 
-    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDnyZBBnfu+qNi1x5C0YKIob4ACrA84HdMArTGobttMHIxM2Z6aLshFmoKZa/pbyQS6D5yNywr4KM/llWiY2aV2puIflUxRT8SjjPehswCvm6eWQM+r3mB755m48x+diDl8URJsX4AJ3pQHnKWEvitZcuBh0GTfsLzKU/BfHEaH7QIDAQAB"
-(this is a base 64 encoded version of the app's public key)
+Any webpage that you can write on, you can now use Draft with. Your blog, Gmail, Twitter, Facebook, even comment boxes on websites like Reddit and Hacker News.
 
-The key *must* be removed before uploading it to the store.
+Just place your cursor in the box you want to write in, click the Chrome Draft extension, and Draft will open up in a new Chrome Tab. 
 
-## Resources
+Choose an already written document or something new to write in Draft. When you're done, there's a menu button to paste your work back into the text box you came from. 
 
-* [Runtime](http://developer.chrome.com/trunk/apps/app.runtime.html)
-* [Window](http://developer.chrome.com/trunk/apps/app.window.html)
-* [Indetity](http://developer.chrome.com/trunk/apps/experimental.identity.html)
+All of a sudden, everything you write everywhere is focused, versioned, and able to be shared with friends for help before you publish. I hope you like it. This might be the neatest thing I've ever made. :)
+
+[Click here to access the Draft Chrome extension.](https://chrome.google.com/webstore/detail/draft/amlbbbgcijmiooecobhkjblcdkjldmdk)
+
+<hr/>
+
+I've open sourced this Chrome extension. I did this hoping the Draft community can make it a lot better. Also, I've gotten a lot of requests for this functionality in a Firefox and Safari extension, and I could really use some help creating those. 
+
