@@ -1,3 +1,7 @@
+// Dev settings
+var host = "127.0.0.1";
+var protocol = "http";
+var protocol_and_host = protocol + "://" + host + ":3000";
 
 
 var valueListenerFunction = function valueListener(data, sender, sendResponse){
@@ -5,6 +9,10 @@ var valueListenerFunction = function valueListener(data, sender, sendResponse){
   if(data == 'getCurrentValue'){
     var currentValue = getCurrentValue(document); 
     sendResponse(currentValue);
+  }
+  else if(data == "getArticle"){
+    var article = getArticle(document); 
+    sendResponse(article);
   }
   else if(data == "getDraftValue"){
 
@@ -28,6 +36,8 @@ var valueListenerFunction = function valueListener(data, sender, sendResponse){
   else{
     setCurrentValue(document, data); 
   }
+
+  return true;
 }
 
 
@@ -58,6 +68,20 @@ function getCurrentValue(document, includeBody){
   }
 
 }
+
+
+function getArticle(document){
+  
+  var body = null; 
+  var readable = new Readability();
+  readable.setSkipLevel(3);
+  saxParser(document.childNodes[document.childNodes.length-1], readable);
+  article = readable.getArticle();
+
+  return article.html;
+  
+}
+
 
 function setCurrentValue(document, data, includeBody){
   var el = null; 

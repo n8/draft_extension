@@ -21,14 +21,14 @@ var originalTargetURL = null;
 var draftTab = null; 
 
 // Dev settings
-// var host = "127.0.0.1";
-// var protocol = "http";
-// var protocol_and_host = protocol + "://" + host + ":3000";
+var host = "127.0.0.1";
+var protocol = "http";
+var protocol_and_host = protocol + "://" + host + ":3000";
 
 // Prod settings
-var host = "draftin.com";
-var protocol = "https";
-var protocol_and_host = protocol + "://" + host;
+// var host = "draftin.com";
+// var protocol = "https";
+// var protocol_and_host = protocol + "://" + host;
 
 
 // If either the target or Draft tabs are closed, remove the cookies
