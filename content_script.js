@@ -1,8 +1,3 @@
-// Dev settings
-var host = "127.0.0.1";
-var protocol = "http";
-var protocol_and_host = protocol + "://" + host + ":3000";
-
 
 var valueListenerFunction = function valueListener(data, sender, sendResponse){
 
@@ -74,12 +69,15 @@ function getArticle(document){
   
   var body = null; 
   var readable = new Readability();
-  readable.setSkipLevel(3);
+  readable.setSkipLevel(1);
   saxParser(document.childNodes[document.childNodes.length-1], readable);
   article = readable.getArticle();
 
-  return article.html;
-  
+  article_hash = new Object();
+  article_hash["content"] = article.html;
+  article_hash["title"] = article.title;
+
+  return article_hash;
 }
 
 

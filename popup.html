@@ -7,17 +7,22 @@
       overflow: hidden;
       margin: 0px;
       background: #f1f1f1;
+      font-family: Calibri, sans-serif;
+      padding: 0.5em;
     }
 
-    div:first-child {
+    .extension_button:first-child {
       margin-top: 0px;
     }
 
-    div {
+    #login_to_draft{
+      width: 15em;
+    }
+
+    .extension_button {
       cursor: pointer;
       text-align: center;
       padding: 0.5em 0;
-      font-family: Calibri, sans-serif;
       font-size: 0.85em;
       font-weight: bold;
       width: 15em;
@@ -52,19 +57,51 @@
     }
 
     #edit_current_page { 
-      background: #4786F1; 
+      background: #DE5641; 
     }
     #edit_current_page:hover, #edit_current_page:active, #edit_current_page:focus { 
-      background: #386ABE; 
+      background: #AB4232; 
     }
 
+    .label{
+      text-transform: uppercase;
+      letter-spacing:0.1em;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin-bottom: 0.5em;
+    }
     </style>
     <script src="popup.js"></script>
     <script src="jquery.js"></script>
   </head>
   <body>
-    <div id="new_document">New Document</div>
-    <div id="previous_document">Previous Document</div>
-    <div id="edit_current_page">Edit Current Page</div>
+
+    <div id="menu_buttons" style="">
+      <div class="label">
+        For Textboxes: 
+      </div>
+
+      <div id="new_document" class="extension_button">New Document</div>
+      <div id="previous_document" class="extension_button">Previous Document</div>
+
+      <div style="margin-top: 1em">
+        <div class="label">
+          For Articles:
+        </div>
+        <div id="edit_current_page" class="extension_button">Import Current Article</div>
+      </div>
+    </div>
+
+    <div id="login_to_draft" style="display:none">
+      <form action="http://127.0.0.1:3000/draft/users/sign_in">
+        <input autofocus="autofocus" class="string optional" id="draft_user_email" name="draft_user[email]" size="50" style="width: 66%" type="text" value="">
+        <input class="password optional" id="draft_user_password" name="draft_user[password]" size="50" style="width: 66%" type="password">
+      </form>
+    </div>
+
+
+
   </body>
+
+
 </html>

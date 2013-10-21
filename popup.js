@@ -16,7 +16,8 @@ var BGPage = chrome.extension.getBackgroundPage();
 
 // Listens for clicks of the popup menu in the Chrome extension
 document.addEventListener('DOMContentLoaded', function () {
-  var divs = document.querySelectorAll('div');
+
+  var divs = document.querySelectorAll('.extension_button');
   for (var i = 0; i < divs.length; i++) {
     divs[i].addEventListener('click', click);
   }
@@ -45,102 +46,59 @@ function click(e) {
 
  
       // ask the content script for the current value of the target tab's textarea
-      chrome.tabs.sendMessage(targetTab.id, 'getArticle', function(currentTargetValue){
+      chrome.tabs.sendMessage(targetTab.id, getMethod, function(currentTargetValue){
         
         // if the content script doesn't come up with something, it's because it's not supported or the user hasn't clicked into a textare. they might need some documentation
         if(currentTargetValue != "NOT_SUPPORTED_ELEMENT"){
           
-          valueToSet = escape(currentTargetValue); 
+          if(e.target.id == "previous_document"){
+            var url = protocol_and_host + "/documents";
+            chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
+              openURL(url);
+            });
+          }
+          else{
 
-          // # make sure we dont blog the cookie limit or this wont work
-          // if(lengthInUtf8Bytes(valueToSet) > 4000){
-          //   valueToSet = "NOT_SUPPORTED_ELEMENT";
-          // }
+            $.getJSON(protocol_and_host + "/site/authenticity_token.json", function(data){
 
-          chrome.storage.sync.set({'currentTargetValue': valueToSet}, function() {
-            url = null; 
-            if(e.target.id == "previous_document"){
-              url = protocol_and_host + "/documents";
-            }
-            else{
+              // convert so that html turns into markdown
+              var creatUrl = protocol_and_host + "/documents.json?convert=true";
 
-              $.getJSON(protocol_and_host + "/site/authenticity_token.json", function(data){
+              $.post(creatUrl, {authenticity_token: data.token, document: {content: currentTargetValue["content"], name: currentTargetValue["title"]}}, function(createData){
 
-                var creatUrl = protocol_and_host + "/documents.json";
+                var editURL = protocol_and_host + "/documents/" + createData.id + "/edit";
 
-                $.post(creatUrl, {authenticity_token: data.token, document: {content: currentTargetValue}}, function(createData){
+                if(e.target.id == "new_document"){
 
-                  var showUrl = protocol_and_host + "/documents/" + createData.id;
-
-                  chrome.tabs.create({url: showUrl}, function(draftTab){
-                    BGPage.setDraftTab(draftTab); 
+                  // So Draft knows where to return the user
+                  chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
+                    openURL(editURL);
                   });
-
-                  window.close();
-                });
-
-
-
+                }
+                else{
+                  openURL(editURL);
+                }
               });
 
-            }
+            }).fail(function(){
+              // User needs to be logged into use this
+              openURL(protocol_and_host + "/draft/users/sign_in");
+            });
 
-            // chrome.tabs.create({url: url}, function(draftTab){
-            //   BGPage.setDraftTab(draftTab); 
-            // });
+          }
 
-            // window.close();
-
-            return true;
-          });
-
-
-
-          // set the referring url and current value of the text area for Draft to use
-          // chrome.cookies.set( {"domain": host, "url": protocol_and_host, "name": "currentTargetValue", "value": valueToSet}, function(currentValueCookie){
-
-          //   chrome.cookies.set( {"url": protocol_and_host, "name": "currentTargetURL", "value": escape(targetTab.url)}, function(currentTargetURLCookie){
-
-          //     url = null; 
-          //     if(e.target.id == "previous_document"){
-          //       url = protocol_and_host + "/documents";
-          //     }
-          //     else{
-          //       url = protocol_and_host + "/documents/new";
-          //     }
-
-          //     chrome.tabs.create({url: url}, function(draftTab){
-          //       BGPage.setDraftTab(draftTab); 
-          //     });
-
-          //     window.close();
-
-          //   });
-          // });
-
+          return true;
         }
         else{
-          chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
-            
-          });
-          window.close();
+          openURL(protocol_and_host + "/extension_help");
         }
 
       });
- 
-
-      
-
     }
     else{
-      chrome.tabs.create({url: protocol_and_host + "/extension_help"}, function(tab){
-        
-      });
-      window.close();
+      openURL(protocol_and_host + "/extension_help");
     }
 
-    // closing the window immediately could cancel the above callbacks
-    //window.close();
   });  
 }
 
@@ -151,4 +109,14 @@ function lengthInUtf8Bytes(str) {
   var m = encodeURIComponent(str).match(/%[89ABab]/g);
   return str.length + (m ? m.length : 0);
 }
+
+function openURL(url){
+  chrome.tabs.create({url: url}, function(draftTab){
+    BGPage.setDraftTab(draftTab); 
+  });
+
+  window.close();
+}
+
+
 
